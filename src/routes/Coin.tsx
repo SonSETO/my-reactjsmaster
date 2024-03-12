@@ -12,6 +12,8 @@ import styled from "styled-components";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import { Helmet } from "react-helmet";
+import { useRecoilValue } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Tabs = styled.div`
   display: grid;
@@ -145,17 +147,13 @@ interface PriceData {
   };
 }
 
-interface ToggleDarkType {
-  isDark: boolean;
-}
-
 function Coin() {
   const navigate = useNavigate();
   const { coinId } = useParams();
   const { state } = useLocation() as LocationState;
   const priceMatch = useMatch("/:coinId/price");
   const chartMatch = useMatch("/:coinId/chart");
-  const { isDark } = useOutletContext<ToggleDarkType>();
+  const isDark = useRecoilValue(isDarkAtom);
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
     () => fetchCoinInfo(coinId)
