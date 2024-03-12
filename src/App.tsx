@@ -1,6 +1,9 @@
-import React from "react";
-import Router from "./Router";
-import { createGlobalStyle } from "styled-components";
+import React, { useState } from "react";
+
+import { ThemeProvider, createGlobalStyle } from "styled-components";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { darkTheme, lightTheme } from "./theme";
+import { Outlet } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -55,8 +58,9 @@ table {
 }
 body{
   font-size: 'Source Sans Pro', sans-serif;
-  background-color: ${(props) => props.theme.bgClolr};
+  background-color: ${(props) => props.theme.bgColor};
   color: ${(props) => props.theme.textColor};
+  line-height: 1.2;
 }
 a{
   text-decoration: none;
@@ -68,10 +72,16 @@ a{
 `;
 
 function App() {
+  const [isDark, setIsDark] = useState(false);
+  const toggleDark = () => setIsDark((current) => !current);
+
   return (
     <>
-      <GlobalStyle />
-      <Router />
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Outlet context={{ toggleDark, isDark }} />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </ThemeProvider>
     </>
   );
 }
